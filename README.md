@@ -36,6 +36,8 @@ curl -sS -X POST http://localhost:8080/api/v1/transfers \
 
 **Путь** — 48 модулей Intern → Senior. Вкладка «Играть»: сортировки, споты, сцены, AC. Разбор — рядом, не вместо.
 
+**BPMN** — живой редактор процесса банкомата: [http://localhost:8080/bpmn](http://localhost:8080/bpmn). Схема в `public/bpmn/atm-process.bpmn` открывается в Camunda Modeler и bpmn.io.
+
 **API · пет** — двойная запись, T-счета, холд → capture → refund, IBAN / nostro / MT103, FX двумя журналами, зарплатный файл, клиринг T+1, сверка Orient. Контракт с завода дырявый: нет идемпотентности, ACS timeout = SUCCESS, refund без реверса.
 
 **Квесты** — пять контуров: ночь на ledger, Malo Wallet, ShopLine, MedQueue, CityPark. Пишете ноги журнала, 409, SMS, NFR. Исход считается из метрик, не из «правильного теста».

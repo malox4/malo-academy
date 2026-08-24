@@ -20,7 +20,8 @@ export type BlockKind =
   | "match"
   | "scene"
   | "order"
-  | "spot";
+  | "spot"
+  | "bpmn";
 
 export type Grade = {
   id: GradeId;
@@ -104,6 +105,14 @@ export type DiagramBlock = {
   title: string;
   hint: string;
   nodes: DiagramNode[];
+};
+
+export type BpmnBlock = {
+  kind: "bpmn";
+  title: string;
+  hint: string;
+  src: string;
+  storageKey?: string;
 };
 
 export type AccordionBlock = {
@@ -244,7 +253,8 @@ export type ContentBlock =
   | MatchBlock
   | SceneBlock
   | OrderBlock
-  | SpotBlock;
+  | SpotBlock
+  | BpmnBlock;
 
 export const PLAY_KINDS: BlockKind[] = [
   "sort",
@@ -255,6 +265,7 @@ export const PLAY_KINDS: BlockKind[] = [
   "case",
   "quiz",
   "practice",
+  "bpmn",
 ];
 
 export function isPlayBlock(kind: BlockKind) {

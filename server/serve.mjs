@@ -25,6 +25,8 @@ const MIME = {
   ".ico": "image/x-icon",
   ".map": "application/json",
   ".txt": "text/plain; charset=utf-8",
+  ".bpmn": "application/bpmn20-xml; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8",
 };
 
 function sendFile(res, file) {

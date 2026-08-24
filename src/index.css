@@ -82,3 +82,17 @@ body {
 .animate-floaty {
   animation: floaty 6s ease-in-out infinite;
 }
+
+.bpmn-host {
+  background: #f4f1ea;
+}
+
+.bpmn-host .djs-palette {
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.bpmn-host .djs-container svg {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
