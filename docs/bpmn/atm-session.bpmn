@@ -1,437 +1,482 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0"
-                  xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0"
-                  id="Definitions_ATM"
-                  targetNamespace="https://malo.academy/bpmn/atm"
-                  exporter="Malo Academy">
-  <bpmn:collaboration id="Collaboration_1">
-    <bpmn:participant id="Participant_1" name="Процесс" processRef="Process_ATM" />
+<bpmn:definitions xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_ATM" name="Сессия банкомата" targetNamespace="http://malo.academy/bpmn/atm" exporter="Malo Academy" exporterVersion="1.0">
+  <bpmn:collaboration id="Collaboration_ATM" name="Сессия работы с банкоматом">
+    <bpmn:participant id="Participant_Process" name="Процесс" processRef="Process_ATM" />
   </bpmn:collaboration>
-  <bpmn:process id="Process_ATM" name="Сессия банкомата" isExecutable="false">
-    <bpmn:laneSet id="LaneSet_1">
+  <bpmn:process id="Process_ATM" name="Сессия работы с банкоматом" isExecutable="false" processType="None">
+    <bpmn:laneSet id="LaneSet_ATM">
       <bpmn:lane id="Lane_Client" name="Клиент">
-        <bpmn:flowNodeRef>Start</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>InsertCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_Begin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_InsertCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_SelectOp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_EnterAmount</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_ShowBalance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Session</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_ATM" name="Банкомат">
-        <bpmn:flowNodeRef>CheckCard</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GwCard</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CardBad</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>RequestPin</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>VerifyPin</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GwPin</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GwTries</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Capture</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndCapture</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>OpenSess</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>SelectOp</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GwOp</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ViewBal</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ShowBal</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EnterAmt</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GwFunds</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>NoFunds</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Complete</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ReturnCard</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndOk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_CheckCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_CardOk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_RequestPin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_CheckPin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PinOk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_OpenSession</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_WhichOp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_ViewBalance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_CheckFunds</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_FundsOk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_CompleteOp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ReturnCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CardUnsupported</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Attempts</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CaptureCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Terminated</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Insufficient</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Proc" name="Процессинг">
-        <bpmn:flowNodeRef>CheckFunds</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_Processing" name="Процессинг">
+        <bpmn:flowNodeRef>ServiceTask_Authorize</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Out" name="Система вывода">
-        <bpmn:flowNodeRef>Cash</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Receipt</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_Output" name="Система вывода">
+        <bpmn:flowNodeRef>ServiceTask_Dispense</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_Print</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="Start" name="Начало">
-      <bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
-    <bpmn:userTask id="InsertCard" name="Вставить карту">
-      <bpmn:incoming>f1</bpmn:incoming>
-      <bpmn:outgoing>f2</bpmn:outgoing></bpmn:userTask>
-    <bpmn:serviceTask id="CheckCard" name="Проверить карту">
-      <bpmn:incoming>f2</bpmn:incoming>
-      <bpmn:outgoing>f3</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="GwCard" name="Карта поддерживается?" gatewayDirection="Diverging">
-      <bpmn:incoming>f3</bpmn:incoming>
-      <bpmn:outgoing>f4</bpmn:outgoing>
-      <bpmn:outgoing>f5</bpmn:outgoing></bpmn:exclusiveGateway>
-    <bpmn:task id="CardBad" name="Карта не поддерживается">
-      <bpmn:incoming>f4</bpmn:incoming>
-      <bpmn:outgoing>f25</bpmn:outgoing></bpmn:task>
-    <bpmn:serviceTask id="RequestPin" name="Запросить ПИН-код">
-      <bpmn:incoming>f5</bpmn:incoming>
-      <bpmn:incoming>f10</bpmn:incoming>
-      <bpmn:outgoing>f6</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:serviceTask id="VerifyPin" name="Проверить ПИН-код">
-      <bpmn:incoming>f6</bpmn:incoming>
-      <bpmn:outgoing>f7</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="GwPin" name="ПИН верный?" gatewayDirection="Diverging">
-      <bpmn:incoming>f7</bpmn:incoming>
-      <bpmn:outgoing>f8</bpmn:outgoing>
-      <bpmn:outgoing>f12</bpmn:outgoing></bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="GwTries" name="Попыток больше 3-х раз?" gatewayDirection="Diverging">
-      <bpmn:incoming>f8</bpmn:incoming>
-      <bpmn:outgoing>f9</bpmn:outgoing>
-      <bpmn:outgoing>f10</bpmn:outgoing></bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Capture" name="Изъять карту">
-      <bpmn:incoming>f9</bpmn:incoming>
-      <bpmn:outgoing>f11</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:endEvent id="EndCapture" name="Сессия завершена">
-      <bpmn:incoming>f11</bpmn:incoming>
-      <bpmn:terminateEventDefinition id="TermDef_1" />
+    <bpmn:startEvent id="StartEvent_Begin" name="Начало">
+      <bpmn:outgoing>Flow_Start_Insert</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UserTask_InsertCard" name="Вставить карту">
+      <bpmn:incoming>Flow_Start_Insert</bpmn:incoming>
+      <bpmn:outgoing>Flow_Insert_Check</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UserTask_SelectOp" name="Выбрать операцию">
+      <bpmn:incoming>Flow_Open_Select</bpmn:incoming>
+      <bpmn:outgoing>Flow_Select_Which</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UserTask_EnterAmount" name="Ввести сумму">
+      <bpmn:incoming>Flow_OpWithdraw</bpmn:incoming>
+      <bpmn:outgoing>Flow_Amount_Funds</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UserTask_ShowBalance" name="Показать баланс на экране">
+      <bpmn:incoming>Flow_View_Show</bpmn:incoming>
+      <bpmn:outgoing>Flow_Show_Complete</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_Session" name="Завершение сессии">
+      <bpmn:incoming>Flow_Return_End</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="OpenSess" name="Открыть сессию">
-      <bpmn:incoming>f12</bpmn:incoming>
-      <bpmn:outgoing>f13</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:userTask id="SelectOp" name="Выбрать операцию">
-      <bpmn:incoming>f13</bpmn:incoming>
-      <bpmn:outgoing>f14</bpmn:outgoing></bpmn:userTask>
-    <bpmn:exclusiveGateway id="GwOp" name="Какая операция?" gatewayDirection="Diverging">
-      <bpmn:incoming>f14</bpmn:incoming>
-      <bpmn:outgoing>f15</bpmn:outgoing>
-      <bpmn:outgoing>f18</bpmn:outgoing></bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="ViewBal" name="Просмотр баланса">
-      <bpmn:incoming>f15</bpmn:incoming>
-      <bpmn:outgoing>f16</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:userTask id="ShowBal" name="Показать баланс на экране">
-      <bpmn:incoming>f16</bpmn:incoming>
-      <bpmn:outgoing>f17</bpmn:outgoing></bpmn:userTask>
-    <bpmn:userTask id="EnterAmt" name="Ввести сумму">
-      <bpmn:incoming>f18</bpmn:incoming>
-      <bpmn:outgoing>f19</bpmn:outgoing></bpmn:userTask>
-    <bpmn:serviceTask id="CheckFunds" name="Проверить доступность средств">
-      <bpmn:incoming>f19</bpmn:incoming>
-      <bpmn:outgoing>f20</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="GwFunds" name="Средства достаточно?" gatewayDirection="Diverging">
-      <bpmn:incoming>f20</bpmn:incoming>
-      <bpmn:outgoing>f21</bpmn:outgoing>
-      <bpmn:outgoing>f22</bpmn:outgoing></bpmn:exclusiveGateway>
-    <bpmn:task id="NoFunds" name="Недостаточно средств">
-      <bpmn:incoming>f21</bpmn:incoming>
-      <bpmn:outgoing>f26</bpmn:outgoing></bpmn:task>
-    <bpmn:serviceTask id="Cash" name="Выдать наличные">
-      <bpmn:incoming>f22</bpmn:incoming>
-      <bpmn:outgoing>f23</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:serviceTask id="Receipt" name="Напечатать чек">
-      <bpmn:incoming>f23</bpmn:incoming>
-      <bpmn:outgoing>f24</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:serviceTask id="Complete" name="Завершить операцию">
-      <bpmn:incoming>f17</bpmn:incoming>
-      <bpmn:incoming>f24</bpmn:incoming>
-      <bpmn:outgoing>f27</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:serviceTask id="ReturnCard" name="Вернуть карту">
-      <bpmn:incoming>f25</bpmn:incoming>
-      <bpmn:incoming>f26</bpmn:incoming>
-      <bpmn:incoming>f27</bpmn:incoming>
-      <bpmn:outgoing>f28</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:endEvent id="EndOk" name="Завершение сессии">
-      <bpmn:incoming>f28</bpmn:incoming></bpmn:endEvent>
-    <bpmn:sequenceFlow id="f1" sourceRef="Start" targetRef="InsertCard" />
-    <bpmn:sequenceFlow id="f2" sourceRef="InsertCard" targetRef="CheckCard" />
-    <bpmn:sequenceFlow id="f3" sourceRef="CheckCard" targetRef="GwCard" />
-    <bpmn:sequenceFlow id="f4" name="Нет" sourceRef="GwCard" targetRef="CardBad" />
-    <bpmn:sequenceFlow id="f5" name="Да (Чиповая / Магнит)" sourceRef="GwCard" targetRef="RequestPin" />
-    <bpmn:sequenceFlow id="f6" sourceRef="RequestPin" targetRef="VerifyPin" />
-    <bpmn:sequenceFlow id="f7" sourceRef="VerifyPin" targetRef="GwPin" />
-    <bpmn:sequenceFlow id="f8" name="Нет" sourceRef="GwPin" targetRef="GwTries" />
-    <bpmn:sequenceFlow id="f9" name="Да" sourceRef="GwTries" targetRef="Capture" />
-    <bpmn:sequenceFlow id="f10" name="Нет" sourceRef="GwTries" targetRef="RequestPin" />
-    <bpmn:sequenceFlow id="f11" sourceRef="Capture" targetRef="EndCapture" />
-    <bpmn:sequenceFlow id="f12" name="Да" sourceRef="GwPin" targetRef="OpenSess" />
-    <bpmn:sequenceFlow id="f13" sourceRef="OpenSess" targetRef="SelectOp" />
-    <bpmn:sequenceFlow id="f14" sourceRef="SelectOp" targetRef="GwOp" />
-    <bpmn:sequenceFlow id="f15" name="Баланс" sourceRef="GwOp" targetRef="ViewBal" />
-    <bpmn:sequenceFlow id="f16" sourceRef="ViewBal" targetRef="ShowBal" />
-    <bpmn:sequenceFlow id="f17" sourceRef="ShowBal" targetRef="Complete" />
-    <bpmn:sequenceFlow id="f18" name="Снятие" sourceRef="GwOp" targetRef="EnterAmt" />
-    <bpmn:sequenceFlow id="f19" sourceRef="EnterAmt" targetRef="CheckFunds" />
-    <bpmn:sequenceFlow id="f20" sourceRef="CheckFunds" targetRef="GwFunds" />
-    <bpmn:sequenceFlow id="f21" name="Нет" sourceRef="GwFunds" targetRef="NoFunds" />
-    <bpmn:sequenceFlow id="f22" name="Да" sourceRef="GwFunds" targetRef="Cash" />
-    <bpmn:sequenceFlow id="f23" sourceRef="Cash" targetRef="Receipt" />
-    <bpmn:sequenceFlow id="f24" sourceRef="Receipt" targetRef="Complete" />
-    <bpmn:sequenceFlow id="f25" sourceRef="CardBad" targetRef="ReturnCard" />
-    <bpmn:sequenceFlow id="f26" sourceRef="NoFunds" targetRef="ReturnCard" />
-    <bpmn:sequenceFlow id="f27" sourceRef="Complete" targetRef="ReturnCard" />
-    <bpmn:sequenceFlow id="f28" sourceRef="ReturnCard" targetRef="EndOk" />
+    <bpmn:serviceTask id="ServiceTask_CheckCard" name="Проверить карту">
+      <bpmn:incoming>Flow_Insert_Check</bpmn:incoming>
+      <bpmn:outgoing>Flow_Check_GwCard</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_CardOk" name="Карта поддерживается?" default="Flow_CardYes" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Check_GwCard</bpmn:incoming>
+      <bpmn:outgoing>Flow_CardNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_CardYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_RequestPin" name="Запросить ПИН-код">
+      <bpmn:incoming>Flow_CardYes</bpmn:incoming>
+      <bpmn:incoming>Flow_RetryPin</bpmn:incoming>
+      <bpmn:outgoing>Flow_Req_CheckPin</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_CheckPin" name="Проверить ПИН-код">
+      <bpmn:incoming>Flow_Req_CheckPin</bpmn:incoming>
+      <bpmn:outgoing>Flow_CheckPin_Gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_PinOk" name="ПИН верный?" default="Flow_PinYes" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_CheckPin_Gw</bpmn:incoming>
+      <bpmn:outgoing>Flow_PinNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PinYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_OpenSession" name="Открыть сессию">
+      <bpmn:incoming>Flow_PinYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Open_Select</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_WhichOp" name="Какая операция?" default="Flow_OpWithdraw" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Select_Which</bpmn:incoming>
+      <bpmn:outgoing>Flow_OpBalance</bpmn:outgoing>
+      <bpmn:outgoing>Flow_OpWithdraw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_ViewBalance" name="Просмотр баланса">
+      <bpmn:incoming>Flow_OpBalance</bpmn:incoming>
+      <bpmn:outgoing>Flow_View_Show</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_CheckFunds" name="Проверить доступность средств">
+      <bpmn:incoming>Flow_Amount_Funds</bpmn:incoming>
+      <bpmn:outgoing>Flow_Funds_Gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_FundsOk" name="Средства достаточно?" default="Flow_FundsYes" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Funds_Gw</bpmn:incoming>
+      <bpmn:outgoing>Flow_FundsNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_FundsYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_CompleteOp" name="Завершить операцию">
+      <bpmn:incoming>Flow_Show_Complete</bpmn:incoming>
+      <bpmn:incoming>Flow_Print_Complete</bpmn:incoming>
+      <bpmn:outgoing>Flow_Complete_Return</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ReturnCard" name="Вернуть карту">
+      <bpmn:incoming>Flow_Unsupported_Return</bpmn:incoming>
+      <bpmn:incoming>Flow_Insufficient_Return</bpmn:incoming>
+      <bpmn:incoming>Flow_Complete_Return</bpmn:incoming>
+      <bpmn:outgoing>Flow_Return_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:task id="Task_CardUnsupported" name="Карта не поддерживается">
+      <bpmn:incoming>Flow_CardNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_Unsupported_Return</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Attempts" name="Попыток больше 3-х раз?" default="Flow_RetryPin" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_PinNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_AttemptsYes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_RetryPin</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_CaptureCard" name="Изъять карту">
+      <bpmn:incoming>Flow_AttemptsYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Capture_End</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_Terminated" name="Сессия завершена">
+      <bpmn:incoming>Flow_Capture_End</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TerminateEventDefinition_Capture" />
+    </bpmn:endEvent>
+    <bpmn:task id="Task_Insufficient" name="Недостаточно средств">
+      <bpmn:incoming>Flow_FundsNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_Insufficient_Return</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="ServiceTask_Authorize" name="Авторизовать снятие">
+      <bpmn:incoming>Flow_FundsYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Auth_Dispense</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_Dispense" name="Выдать наличные">
+      <bpmn:incoming>Flow_Auth_Dispense</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dispense_Print</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_Print" name="Напечатать чек">
+      <bpmn:incoming>Flow_Dispense_Print</bpmn:incoming>
+      <bpmn:outgoing>Flow_Print_Complete</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_Start_Insert" sourceRef="StartEvent_Begin" targetRef="UserTask_InsertCard" />
+    <bpmn:sequenceFlow id="Flow_Insert_Check" sourceRef="UserTask_InsertCard" targetRef="ServiceTask_CheckCard" />
+    <bpmn:sequenceFlow id="Flow_Check_GwCard" sourceRef="ServiceTask_CheckCard" targetRef="Gateway_CardOk" />
+    <bpmn:sequenceFlow id="Flow_CardNo" sourceRef="Gateway_CardOk" targetRef="Task_CardUnsupported" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_CardYes" sourceRef="Gateway_CardOk" targetRef="ServiceTask_RequestPin" name="Да (чиповая / магнитная)" />
+    <bpmn:sequenceFlow id="Flow_Req_CheckPin" sourceRef="ServiceTask_RequestPin" targetRef="ServiceTask_CheckPin" />
+    <bpmn:sequenceFlow id="Flow_CheckPin_Gw" sourceRef="ServiceTask_CheckPin" targetRef="Gateway_PinOk" />
+    <bpmn:sequenceFlow id="Flow_PinNo" sourceRef="Gateway_PinOk" targetRef="Gateway_Attempts" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_AttemptsYes" sourceRef="Gateway_Attempts" targetRef="Task_CaptureCard" name="Да" />
+    <bpmn:sequenceFlow id="Flow_Capture_End" sourceRef="Task_CaptureCard" targetRef="EndEvent_Terminated" />
+    <bpmn:sequenceFlow id="Flow_RetryPin" sourceRef="Gateway_Attempts" targetRef="ServiceTask_RequestPin" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_PinYes" sourceRef="Gateway_PinOk" targetRef="ServiceTask_OpenSession" name="Да" />
+    <bpmn:sequenceFlow id="Flow_Open_Select" sourceRef="ServiceTask_OpenSession" targetRef="UserTask_SelectOp" />
+    <bpmn:sequenceFlow id="Flow_Select_Which" sourceRef="UserTask_SelectOp" targetRef="Gateway_WhichOp" />
+    <bpmn:sequenceFlow id="Flow_OpBalance" sourceRef="Gateway_WhichOp" targetRef="ServiceTask_ViewBalance" name="Баланс" />
+    <bpmn:sequenceFlow id="Flow_View_Show" sourceRef="ServiceTask_ViewBalance" targetRef="UserTask_ShowBalance" />
+    <bpmn:sequenceFlow id="Flow_Show_Complete" sourceRef="UserTask_ShowBalance" targetRef="ServiceTask_CompleteOp" />
+    <bpmn:sequenceFlow id="Flow_OpWithdraw" sourceRef="Gateway_WhichOp" targetRef="UserTask_EnterAmount" name="Снятие" />
+    <bpmn:sequenceFlow id="Flow_Amount_Funds" sourceRef="UserTask_EnterAmount" targetRef="ServiceTask_CheckFunds" />
+    <bpmn:sequenceFlow id="Flow_Funds_Gw" sourceRef="ServiceTask_CheckFunds" targetRef="Gateway_FundsOk" />
+    <bpmn:sequenceFlow id="Flow_FundsNo" sourceRef="Gateway_FundsOk" targetRef="Task_Insufficient" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_FundsYes" sourceRef="Gateway_FundsOk" targetRef="ServiceTask_Authorize" name="Да" />
+    <bpmn:sequenceFlow id="Flow_Auth_Dispense" sourceRef="ServiceTask_Authorize" targetRef="ServiceTask_Dispense" />
+    <bpmn:sequenceFlow id="Flow_Dispense_Print" sourceRef="ServiceTask_Dispense" targetRef="ServiceTask_Print" />
+    <bpmn:sequenceFlow id="Flow_Print_Complete" sourceRef="ServiceTask_Print" targetRef="ServiceTask_CompleteOp" />
+    <bpmn:sequenceFlow id="Flow_Unsupported_Return" sourceRef="Task_CardUnsupported" targetRef="Task_ReturnCard" />
+    <bpmn:sequenceFlow id="Flow_Insufficient_Return" sourceRef="Task_Insufficient" targetRef="Task_ReturnCard" />
+    <bpmn:sequenceFlow id="Flow_Complete_Return" sourceRef="ServiceTask_CompleteOp" targetRef="Task_ReturnCard" />
+    <bpmn:sequenceFlow id="Flow_Return_End" sourceRef="Task_ReturnCard" targetRef="EndEvent_Session" />
+    <bpmn:textAnnotation id="Annotation_XorNotAnd" textFormat="text/plain">
+      <bpmn:text>XOR, не AND: клиент выбирает одну операцию за раз (в исходной схеме здесь ошибочно стоял параллельный шлюз).</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_XorNote" associationDirection="None" sourceRef="Gateway_WhichOp" targetRef="Annotation_XorNotAnd" />
   </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
-      <bpmndi:BPMNShape id="Participant_1_di" bpmnElement="Participant_1" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="2920" height="780" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ATM" name="Сессия банкомата">
+    <bpmndi:BPMNPlane id="BPMNPlane_ATM" bpmnElement="Collaboration_ATM">
+      <bpmndi:BPMNShape id="Participant_Process_di" bpmnElement="Participant_Process" isHorizontal="true">
+        <dc:Bounds x="150" y="80" width="2680" height="920" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_Client_di" bpmnElement="Lane_Client" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="2890" height="140" />
+        <dc:Bounds x="180" y="80" width="2650" height="190" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_ATM_di" bpmnElement="Lane_ATM" isHorizontal="true">
-        <dc:Bounds x="190" y="220" width="2890" height="360" />
+        <dc:Bounds x="180" y="270" width="2650" height="360" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Proc_di" bpmnElement="Lane_Proc" isHorizontal="true">
-        <dc:Bounds x="190" y="580" width="2890" height="130" />
+      <bpmndi:BPMNShape id="Lane_Processing_di" bpmnElement="Lane_Processing" isHorizontal="true">
+        <dc:Bounds x="180" y="630" width="2650" height="170" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Out_di" bpmnElement="Lane_Out" isHorizontal="true">
-        <dc:Bounds x="190" y="710" width="2890" height="150" />
+      <bpmndi:BPMNShape id="Lane_Output_di" bpmnElement="Lane_Output" isHorizontal="true">
+        <dc:Bounds x="180" y="800" width="2650" height="200" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Start_di" bpmnElement="Start" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="220" y="132" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="InsertCard_di" bpmnElement="InsertCard" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
-        <dc:Bounds x="290" y="110" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="CheckCard_di" bpmnElement="CheckCard" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="460" y="280" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GwCard_di" bpmnElement="GwCard" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="630" y="295" width="50" height="50" />
+      <bpmndi:BPMNShape id="StartEvent_Begin_di" bpmnElement="StartEvent_Begin" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="220" y="157" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="610" y="347" width="90" height="40" />
+          <dc:Bounds x="202" y="197" width="70" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="CardBad_di" bpmnElement="CardBad" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
-        <dc:Bounds x="760" y="420" width="120" height="80" />
+      <bpmndi:BPMNShape id="UserTask_InsertCard_di" bpmnElement="UserTask_InsertCard" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="300" y="135" width="120" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="RequestPin_di" bpmnElement="RequestPin" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="760" y="280" width="120" height="80" />
+      <bpmndi:BPMNShape id="UserTask_SelectOp_di" bpmnElement="UserTask_SelectOp" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="1280" y="135" width="140" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="VerifyPin_di" bpmnElement="VerifyPin" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="930" y="280" width="120" height="80" />
+      <bpmndi:BPMNShape id="UserTask_EnterAmount_di" bpmnElement="UserTask_EnterAmount" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="1720" y="135" width="130" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GwPin_di" bpmnElement="GwPin" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="1100" y="295" width="50" height="50" />
+      <bpmndi:BPMNShape id="UserTask_ShowBalance_di" bpmnElement="UserTask_ShowBalance" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="1920" y="135" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Session_di" bpmnElement="EndEvent_Session" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="2667" y="157" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1080" y="347" width="90" height="40" />
+          <dc:Bounds x="2620" y="197" width="130" height="34" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GwTries_di" bpmnElement="GwTries" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="1100" y="435" width="50" height="50" />
+      <bpmndi:BPMNShape id="ServiceTask_CheckCard_di" bpmnElement="ServiceTask_CheckCard" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="470" y="310" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_CardOk_di" bpmnElement="Gateway_CardOk" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="650" y="325" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1080" y="487" width="90" height="40" />
+          <dc:Bounds x="610" y="290" width="130" height="30" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Capture_di" bpmnElement="Capture" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
-        <dc:Bounds x="1280" y="420" width="120" height="80" />
+      <bpmndi:BPMNShape id="ServiceTask_RequestPin_di" bpmnElement="ServiceTask_RequestPin" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="760" y="310" width="140" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndCapture_di" bpmnElement="EndCapture" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
-        <dc:Bounds x="1460" y="442" width="36" height="36" />
+      <bpmndi:BPMNShape id="ServiceTask_CheckPin_di" bpmnElement="ServiceTask_CheckPin" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="950" y="310" width="140" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="OpenSess_di" bpmnElement="OpenSess" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="1280" y="280" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="SelectOp_di" bpmnElement="SelectOp" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
-        <dc:Bounds x="1450" y="280" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GwOp_di" bpmnElement="GwOp" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="1620" y="295" width="50" height="50" />
+      <bpmndi:BPMNShape id="Gateway_PinOk_di" bpmnElement="Gateway_PinOk" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="1140" y="325" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1600" y="347" width="90" height="40" />
+          <dc:Bounds x="1118" y="290" width="90" height="22" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ViewBal_di" bpmnElement="ViewBal" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="1760" y="200" width="120" height="80" />
+      <bpmndi:BPMNShape id="ServiceTask_OpenSession_di" bpmnElement="ServiceTask_OpenSession" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="1280" y="310" width="130" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ShowBal_di" bpmnElement="ShowBal" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
-        <dc:Bounds x="1930" y="200" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EnterAmt_di" bpmnElement="EnterAmt" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
-        <dc:Bounds x="1760" y="360" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="CheckFunds_di" bpmnElement="CheckFunds" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="1930" y="605" width="120" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GwFunds_di" bpmnElement="GwFunds" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="2110" y="375" width="50" height="50" />
+      <bpmndi:BPMNShape id="Gateway_WhichOp_di" bpmnElement="Gateway_WhichOp" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="1600" y="325" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2090" y="427" width="90" height="40" />
+          <dc:Bounds x="1568" y="290" width="120" height="22" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="NoFunds_di" bpmnElement="NoFunds" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
-        <dc:Bounds x="2260" y="420" width="120" height="80" />
+      <bpmndi:BPMNShape id="ServiceTask_ViewBalance_di" bpmnElement="ServiceTask_ViewBalance" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="1720" y="310" width="140" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Cash_di" bpmnElement="Cash" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="2260" y="745" width="120" height="80" />
+      <bpmndi:BPMNShape id="ServiceTask_CheckFunds_di" bpmnElement="ServiceTask_CheckFunds" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="1920" y="310" width="180" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Receipt_di" bpmnElement="Receipt" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="2430" y="745" width="120" height="80" />
+      <bpmndi:BPMNShape id="Gateway_FundsOk_di" bpmnElement="Gateway_FundsOk" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="2160" y="325" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2125" y="290" width="130" height="30" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Complete_di" bpmnElement="Complete" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="2620" y="280" width="120" height="80" />
+      <bpmndi:BPMNShape id="ServiceTask_CompleteOp_di" bpmnElement="ServiceTask_CompleteOp" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="2430" y="310" width="140" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ReturnCard_di" bpmnElement="ReturnCard" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
-        <dc:Bounds x="2790" y="280" width="120" height="80" />
+      <bpmndi:BPMNShape id="Task_ReturnCard_di" bpmnElement="Task_ReturnCard" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="2620" y="310" width="130" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndOk_di" bpmnElement="EndOk" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
-        <dc:Bounds x="2970" y="302" width="36" height="36" />
+      <bpmndi:BPMNShape id="Task_CardUnsupported_di" bpmnElement="Task_CardUnsupported" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="760" y="510" width="170" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
-        <di:waypoint x="256" y="150" />
-        <di:waypoint x="290" y="150" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
-        <di:waypoint x="410" y="150" />
-        <di:waypoint x="435" y="150" />
-        <di:waypoint x="435" y="320" />
-        <di:waypoint x="460" y="320" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
-        <di:waypoint x="580" y="320" />
-        <di:waypoint x="630" y="320" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
-        <di:waypoint x="680" y="320" />
-        <di:waypoint x="720" y="320" />
-        <di:waypoint x="720" y="460" />
-        <di:waypoint x="760" y="460" />
+      <bpmndi:BPMNShape id="Gateway_Attempts_di" bpmnElement="Gateway_Attempts" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="1140" y="525" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="690" y="442" width="90" height="20" />
+          <dc:Bounds x="1088" y="580" width="160" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CaptureCard_di" bpmnElement="Task_CaptureCard" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="1320" y="510" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Terminated_di" bpmnElement="EndEvent_Terminated" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="1510" y="532" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1485" y="572" width="120" height="34" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Insufficient_di" bpmnElement="Task_Insufficient" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="2105" y="510" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_Authorize_di" bpmnElement="ServiceTask_Authorize" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="2230" y="675" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_Dispense_di" bpmnElement="ServiceTask_Dispense" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="2230" y="860" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_Print_di" bpmnElement="ServiceTask_Print" bioc:stroke="#8e24aa" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#8e24aa">
+        <dc:Bounds x="2430" y="860" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_XorNotAnd_di" bpmnElement="Annotation_XorNotAnd">
+        <dc:Bounds x="1488" y="400" width="240" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Insert_di" bpmnElement="Flow_Start_Insert">
+        <di:waypoint x="256" y="175" />
+        <di:waypoint x="300" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Insert_Check_di" bpmnElement="Flow_Insert_Check">
+        <di:waypoint x="360" y="215" />
+        <di:waypoint x="360" y="350" />
+        <di:waypoint x="470" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Check_GwCard_di" bpmnElement="Flow_Check_GwCard">
+        <di:waypoint x="600" y="350" />
+        <di:waypoint x="650" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CardNo_di" bpmnElement="Flow_CardNo" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="675" y="375" />
+        <di:waypoint x="675" y="550" />
+        <di:waypoint x="760" y="550" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="680" y="430" width="36" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
-        <di:waypoint x="680" y="320" />
-        <di:waypoint x="760" y="320" />
+      <bpmndi:BPMNEdge id="Flow_CardYes_di" bpmnElement="Flow_CardYes" bioc:stroke="#2e7d32" color:border-color="#2e7d32">
+        <di:waypoint x="700" y="350" />
+        <di:waypoint x="760" y="350" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="730" y="302" width="90" height="20" />
+          <dc:Bounds x="680" y="300" width="150" height="32" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
-        <di:waypoint x="880" y="320" />
-        <di:waypoint x="930" y="320" />
+      <bpmndi:BPMNEdge id="Flow_Req_CheckPin_di" bpmnElement="Flow_Req_CheckPin">
+        <di:waypoint x="900" y="350" />
+        <di:waypoint x="950" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
-        <di:waypoint x="1050" y="320" />
-        <di:waypoint x="1100" y="320" />
+      <bpmndi:BPMNEdge id="Flow_CheckPin_Gw_di" bpmnElement="Flow_CheckPin_Gw">
+        <di:waypoint x="1090" y="350" />
+        <di:waypoint x="1140" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
-        <di:waypoint x="1125" y="345" />
-        <di:waypoint x="1125" y="435" />
+      <bpmndi:BPMNEdge id="Flow_PinNo_di" bpmnElement="Flow_PinNo" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="1165" y="375" />
+        <di:waypoint x="1165" y="525" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1095" y="417" width="90" height="20" />
+          <dc:Bounds x="1168" y="430" width="36" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
-        <di:waypoint x="1150" y="460" />
-        <di:waypoint x="1280" y="460" />
+      <bpmndi:BPMNEdge id="Flow_AttemptsYes_di" bpmnElement="Flow_AttemptsYes" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="1190" y="550" />
+        <di:waypoint x="1320" y="550" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1250" y="442" width="90" height="20" />
+          <dc:Bounds x="1205" y="500" width="28" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10">
-        <di:waypoint x="1100" y="460" />
-        <di:waypoint x="1060" y="460" />
-        <di:waypoint x="1060" y="378" />
-        <di:waypoint x="820" y="378" />
-        <di:waypoint x="820" y="360" />
+      <bpmndi:BPMNEdge id="Flow_Capture_End_di" bpmnElement="Flow_Capture_End" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="1450" y="550" />
+        <di:waypoint x="1510" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_RetryPin_di" bpmnElement="Flow_RetryPin">
+        <di:waypoint x="1140" y="550" />
+        <di:waypoint x="1080" y="550" />
+        <di:waypoint x="1080" y="470" />
+        <di:waypoint x="700" y="470" />
+        <di:waypoint x="700" y="280" />
+        <di:waypoint x="830" y="280" />
+        <di:waypoint x="830" y="310" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1030" y="360" width="90" height="20" />
+          <dc:Bounds x="720" y="448" width="36" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11">
-        <di:waypoint x="1400" y="460" />
-        <di:waypoint x="1460" y="460" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12">
-        <di:waypoint x="1150" y="320" />
-        <di:waypoint x="1280" y="320" />
+      <bpmndi:BPMNEdge id="Flow_PinYes_di" bpmnElement="Flow_PinYes" bioc:stroke="#2e7d32" color:border-color="#2e7d32">
+        <di:waypoint x="1190" y="350" />
+        <di:waypoint x="1280" y="350" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1250" y="302" width="90" height="20" />
+          <dc:Bounds x="1195" y="300" width="28" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13">
-        <di:waypoint x="1400" y="320" />
-        <di:waypoint x="1450" y="320" />
+      <bpmndi:BPMNEdge id="Flow_Open_Select_di" bpmnElement="Flow_Open_Select">
+        <di:waypoint x="1345" y="310" />
+        <di:waypoint x="1350" y="215" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14">
-        <di:waypoint x="1570" y="320" />
-        <di:waypoint x="1620" y="320" />
+      <bpmndi:BPMNEdge id="Flow_Select_Which_di" bpmnElement="Flow_Select_Which">
+        <di:waypoint x="1420" y="175" />
+        <di:waypoint x="1480" y="175" />
+        <di:waypoint x="1480" y="350" />
+        <di:waypoint x="1600" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15">
-        <di:waypoint x="1670" y="320" />
-        <di:waypoint x="1715" y="320" />
-        <di:waypoint x="1715" y="240" />
-        <di:waypoint x="1760" y="240" />
+      <bpmndi:BPMNEdge id="Flow_OpBalance_di" bpmnElement="Flow_OpBalance">
+        <di:waypoint x="1650" y="350" />
+        <di:waypoint x="1720" y="350" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1685" y="222" width="90" height="20" />
+          <dc:Bounds x="1625" y="300" width="60" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16">
-        <di:waypoint x="1880" y="240" />
-        <di:waypoint x="1930" y="240" />
+      <bpmndi:BPMNEdge id="Flow_View_Show_di" bpmnElement="Flow_View_Show">
+        <di:waypoint x="1790" y="310" />
+        <di:waypoint x="1790" y="280" />
+        <di:waypoint x="2010" y="280" />
+        <di:waypoint x="2010" y="215" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17">
-        <di:waypoint x="2050" y="240" />
-        <di:waypoint x="2604" y="240" />
-        <di:waypoint x="2604" y="320" />
-        <di:waypoint x="2620" y="320" />
+      <bpmndi:BPMNEdge id="Flow_Show_Complete_di" bpmnElement="Flow_Show_Complete">
+        <di:waypoint x="2100" y="175" />
+        <di:waypoint x="2500" y="175" />
+        <di:waypoint x="2500" y="310" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18">
-        <di:waypoint x="1670" y="320" />
-        <di:waypoint x="1715" y="320" />
-        <di:waypoint x="1715" y="400" />
-        <di:waypoint x="1760" y="400" />
+      <bpmndi:BPMNEdge id="Flow_OpWithdraw_di" bpmnElement="Flow_OpWithdraw">
+        <di:waypoint x="1625" y="325" />
+        <di:waypoint x="1625" y="175" />
+        <di:waypoint x="1720" y="175" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1685" y="382" width="90" height="20" />
+          <dc:Bounds x="1635" y="200" width="55" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19">
-        <di:waypoint x="1820" y="440" />
-        <di:waypoint x="1905" y="440" />
-        <di:waypoint x="1905" y="605" />
-        <di:waypoint x="1990" y="605" />
+      <bpmndi:BPMNEdge id="Flow_Amount_Funds_di" bpmnElement="Flow_Amount_Funds">
+        <di:waypoint x="1850" y="175" />
+        <di:waypoint x="1885" y="175" />
+        <di:waypoint x="1885" y="350" />
+        <di:waypoint x="1920" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20">
-        <di:waypoint x="1990" y="605" />
-        <di:waypoint x="2062" y="605" />
-        <di:waypoint x="2062" y="425" />
-        <di:waypoint x="2135" y="425" />
+      <bpmndi:BPMNEdge id="Flow_Funds_Gw_di" bpmnElement="Flow_Funds_Gw">
+        <di:waypoint x="2100" y="350" />
+        <di:waypoint x="2160" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21">
-        <di:waypoint x="2160" y="400" />
-        <di:waypoint x="2210" y="400" />
-        <di:waypoint x="2210" y="460" />
-        <di:waypoint x="2260" y="460" />
+      <bpmndi:BPMNEdge id="Flow_FundsNo_di" bpmnElement="Flow_FundsNo" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="2185" y="375" />
+        <di:waypoint x="2185" y="510" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2180" y="442" width="90" height="20" />
+          <dc:Bounds x="2190" y="430" width="36" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22">
-        <di:waypoint x="2135" y="425" />
-        <di:waypoint x="2227" y="425" />
-        <di:waypoint x="2227" y="745" />
-        <di:waypoint x="2320" y="745" />
+      <bpmndi:BPMNEdge id="Flow_FundsYes_di" bpmnElement="Flow_FundsYes" bioc:stroke="#2e7d32" color:border-color="#2e7d32">
+        <di:waypoint x="2210" y="350" />
+        <di:waypoint x="2305" y="350" />
+        <di:waypoint x="2305" y="675" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2197" y="727" width="90" height="20" />
+          <dc:Bounds x="2220" y="360" width="28" height="18" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23">
-        <di:waypoint x="2380" y="785" />
-        <di:waypoint x="2430" y="785" />
+      <bpmndi:BPMNEdge id="Flow_Auth_Dispense_di" bpmnElement="Flow_Auth_Dispense">
+        <di:waypoint x="2305" y="755" />
+        <di:waypoint x="2300" y="860" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24">
-        <di:waypoint x="2490" y="745" />
-        <di:waypoint x="2604" y="745" />
-        <di:waypoint x="2604" y="360" />
-        <di:waypoint x="2680" y="360" />
+      <bpmndi:BPMNEdge id="Flow_Dispense_Print_di" bpmnElement="Flow_Dispense_Print">
+        <di:waypoint x="2370" y="900" />
+        <di:waypoint x="2430" y="900" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f25_di" bpmnElement="f25">
-        <di:waypoint x="880" y="460" />
-        <di:waypoint x="2850" y="460" />
-        <di:waypoint x="2850" y="360" />
+      <bpmndi:BPMNEdge id="Flow_Print_Complete_di" bpmnElement="Flow_Print_Complete">
+        <di:waypoint x="2500" y="860" />
+        <di:waypoint x="2500" y="390" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f26_di" bpmnElement="f26">
-        <di:waypoint x="2380" y="460" />
-        <di:waypoint x="2850" y="460" />
-        <di:waypoint x="2850" y="360" />
+      <bpmndi:BPMNEdge id="Flow_Unsupported_Return_di" bpmnElement="Flow_Unsupported_Return" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="930" y="550" />
+        <di:waypoint x="930" y="612" />
+        <di:waypoint x="2600" y="612" />
+        <di:waypoint x="2600" y="350" />
+        <di:waypoint x="2620" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f27_di" bpmnElement="f27">
-        <di:waypoint x="2740" y="320" />
-        <di:waypoint x="2790" y="320" />
+      <bpmndi:BPMNEdge id="Flow_Insufficient_Return_di" bpmnElement="Flow_Insufficient_Return" bioc:stroke="#c62828" color:border-color="#c62828">
+        <di:waypoint x="2265" y="550" />
+        <di:waypoint x="2265" y="612" />
+        <di:waypoint x="2685" y="612" />
+        <di:waypoint x="2685" y="390" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f28_di" bpmnElement="f28">
-        <di:waypoint x="2910" y="320" />
-        <di:waypoint x="2970" y="320" />
+      <bpmndi:BPMNEdge id="Flow_Complete_Return_di" bpmnElement="Flow_Complete_Return" bioc:stroke="#2e7d32" color:border-color="#2e7d32">
+        <di:waypoint x="2570" y="350" />
+        <di:waypoint x="2620" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Return_End_di" bpmnElement="Flow_Return_End" bioc:stroke="#2e7d32" color:border-color="#2e7d32">
+        <di:waypoint x="2685" y="310" />
+        <di:waypoint x="2685" y="193" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_XorNote_di" bpmnElement="Association_XorNote">
+        <di:waypoint x="1625" y="375" />
+        <di:waypoint x="1625" y="400" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
