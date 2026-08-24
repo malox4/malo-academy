@@ -74,7 +74,7 @@ export function BpmnEditor({
       if (!modeler) return;
       await modeler.importXML(xml);
       const canvas = modeler.get("canvas") as CanvasService;
-      canvas.zoom("fit-viewport");
+      requestAnimationFrame(() => canvas.zoom("fit-viewport"));
       setDirty(markDirty);
       setStatus("ready");
       setError("");
@@ -88,7 +88,6 @@ export function BpmnEditor({
     if (!el) return;
     const modeler = new BpmnModeler({
       container: el,
-      keyboard: { bindTo: el },
     });
     modelerRef.current = modeler;
     const bus = modeler.get("eventBus") as EventBusService;
@@ -119,6 +118,7 @@ export function BpmnEditor({
       window.clearTimeout(saveTimer.current);
       modeler.destroy();
       modelerRef.current = null;
+      el.replaceChildren();
     };
   }, [src, storageKey, loadXml, persist, syncStack]);
 
