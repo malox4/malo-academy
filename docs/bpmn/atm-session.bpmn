@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0"
+                  xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0"
+                  id="Definitions_ATM"
+                  targetNamespace="https://malo.academy/bpmn/atm"
+                  exporter="Malo Academy">
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="Participant_1" name="Процесс" processRef="Process_ATM" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_ATM" name="Сессия банкомата" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Client" name="Клиент">
+        <bpmn:flowNodeRef>Start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>InsertCard</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ATM" name="Банкомат">
+        <bpmn:flowNodeRef>CheckCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GwCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CardBad</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>RequestPin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>VerifyPin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GwPin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GwTries</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Capture</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndCapture</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>OpenSess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SelectOp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GwOp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ViewBal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ShowBal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EnterAmt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GwFunds</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>NoFunds</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Complete</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ReturnCard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndOk</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Proc" name="Процессинг">
+        <bpmn:flowNodeRef>CheckFunds</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Out" name="Система вывода">
+        <bpmn:flowNodeRef>Cash</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Receipt</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start" name="Начало">
+      <bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:userTask id="InsertCard" name="Вставить карту">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing></bpmn:userTask>
+    <bpmn:serviceTask id="CheckCard" name="Проверить карту">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GwCard" name="Карта поддерживается?" gatewayDirection="Diverging">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:outgoing>f5</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:task id="CardBad" name="Карта не поддерживается">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f25</bpmn:outgoing></bpmn:task>
+    <bpmn:serviceTask id="RequestPin" name="Запросить ПИН-код">
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:incoming>f10</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:serviceTask id="VerifyPin" name="Проверить ПИН-код">
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:outgoing>f7</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GwPin" name="ПИН верный?" gatewayDirection="Diverging">
+      <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:outgoing>f8</bpmn:outgoing>
+      <bpmn:outgoing>f12</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="GwTries" name="Попыток больше 3-х раз?" gatewayDirection="Diverging">
+      <bpmn:incoming>f8</bpmn:incoming>
+      <bpmn:outgoing>f9</bpmn:outgoing>
+      <bpmn:outgoing>f10</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Capture" name="Изъять карту">
+      <bpmn:incoming>f9</bpmn:incoming>
+      <bpmn:outgoing>f11</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:endEvent id="EndCapture" name="Сессия завершена">
+      <bpmn:incoming>f11</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TermDef_1" />
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="OpenSess" name="Открыть сессию">
+      <bpmn:incoming>f12</bpmn:incoming>
+      <bpmn:outgoing>f13</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:userTask id="SelectOp" name="Выбрать операцию">
+      <bpmn:incoming>f13</bpmn:incoming>
+      <bpmn:outgoing>f14</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="GwOp" name="Какая операция?" gatewayDirection="Diverging">
+      <bpmn:incoming>f14</bpmn:incoming>
+      <bpmn:outgoing>f15</bpmn:outgoing>
+      <bpmn:outgoing>f18</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ViewBal" name="Просмотр баланса">
+      <bpmn:incoming>f15</bpmn:incoming>
+      <bpmn:outgoing>f16</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:userTask id="ShowBal" name="Показать баланс на экране">
+      <bpmn:incoming>f16</bpmn:incoming>
+      <bpmn:outgoing>f17</bpmn:outgoing></bpmn:userTask>
+    <bpmn:userTask id="EnterAmt" name="Ввести сумму">
+      <bpmn:incoming>f18</bpmn:incoming>
+      <bpmn:outgoing>f19</bpmn:outgoing></bpmn:userTask>
+    <bpmn:serviceTask id="CheckFunds" name="Проверить доступность средств">
+      <bpmn:incoming>f19</bpmn:incoming>
+      <bpmn:outgoing>f20</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GwFunds" name="Средства достаточно?" gatewayDirection="Diverging">
+      <bpmn:incoming>f20</bpmn:incoming>
+      <bpmn:outgoing>f21</bpmn:outgoing>
+      <bpmn:outgoing>f22</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:task id="NoFunds" name="Недостаточно средств">
+      <bpmn:incoming>f21</bpmn:incoming>
+      <bpmn:outgoing>f26</bpmn:outgoing></bpmn:task>
+    <bpmn:serviceTask id="Cash" name="Выдать наличные">
+      <bpmn:incoming>f22</bpmn:incoming>
+      <bpmn:outgoing>f23</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:serviceTask id="Receipt" name="Напечатать чек">
+      <bpmn:incoming>f23</bpmn:incoming>
+      <bpmn:outgoing>f24</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:serviceTask id="Complete" name="Завершить операцию">
+      <bpmn:incoming>f17</bpmn:incoming>
+      <bpmn:incoming>f24</bpmn:incoming>
+      <bpmn:outgoing>f27</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:serviceTask id="ReturnCard" name="Вернуть карту">
+      <bpmn:incoming>f25</bpmn:incoming>
+      <bpmn:incoming>f26</bpmn:incoming>
+      <bpmn:incoming>f27</bpmn:incoming>
+      <bpmn:outgoing>f28</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:endEvent id="EndOk" name="Завершение сессии">
+      <bpmn:incoming>f28</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="Start" targetRef="InsertCard" />
+    <bpmn:sequenceFlow id="f2" sourceRef="InsertCard" targetRef="CheckCard" />
+    <bpmn:sequenceFlow id="f3" sourceRef="CheckCard" targetRef="GwCard" />
+    <bpmn:sequenceFlow id="f4" name="Нет" sourceRef="GwCard" targetRef="CardBad" />
+    <bpmn:sequenceFlow id="f5" name="Да (Чиповая / Магнит)" sourceRef="GwCard" targetRef="RequestPin" />
+    <bpmn:sequenceFlow id="f6" sourceRef="RequestPin" targetRef="VerifyPin" />
+    <bpmn:sequenceFlow id="f7" sourceRef="VerifyPin" targetRef="GwPin" />
+    <bpmn:sequenceFlow id="f8" name="Нет" sourceRef="GwPin" targetRef="GwTries" />
+    <bpmn:sequenceFlow id="f9" name="Да" sourceRef="GwTries" targetRef="Capture" />
+    <bpmn:sequenceFlow id="f10" name="Нет" sourceRef="GwTries" targetRef="RequestPin" />
+    <bpmn:sequenceFlow id="f11" sourceRef="Capture" targetRef="EndCapture" />
+    <bpmn:sequenceFlow id="f12" name="Да" sourceRef="GwPin" targetRef="OpenSess" />
+    <bpmn:sequenceFlow id="f13" sourceRef="OpenSess" targetRef="SelectOp" />
+    <bpmn:sequenceFlow id="f14" sourceRef="SelectOp" targetRef="GwOp" />
+    <bpmn:sequenceFlow id="f15" name="Баланс" sourceRef="GwOp" targetRef="ViewBal" />
+    <bpmn:sequenceFlow id="f16" sourceRef="ViewBal" targetRef="ShowBal" />
+    <bpmn:sequenceFlow id="f17" sourceRef="ShowBal" targetRef="Complete" />
+    <bpmn:sequenceFlow id="f18" name="Снятие" sourceRef="GwOp" targetRef="EnterAmt" />
+    <bpmn:sequenceFlow id="f19" sourceRef="EnterAmt" targetRef="CheckFunds" />
+    <bpmn:sequenceFlow id="f20" sourceRef="CheckFunds" targetRef="GwFunds" />
+    <bpmn:sequenceFlow id="f21" name="Нет" sourceRef="GwFunds" targetRef="NoFunds" />
+    <bpmn:sequenceFlow id="f22" name="Да" sourceRef="GwFunds" targetRef="Cash" />
+    <bpmn:sequenceFlow id="f23" sourceRef="Cash" targetRef="Receipt" />
+    <bpmn:sequenceFlow id="f24" sourceRef="Receipt" targetRef="Complete" />
+    <bpmn:sequenceFlow id="f25" sourceRef="CardBad" targetRef="ReturnCard" />
+    <bpmn:sequenceFlow id="f26" sourceRef="NoFunds" targetRef="ReturnCard" />
+    <bpmn:sequenceFlow id="f27" sourceRef="Complete" targetRef="ReturnCard" />
+    <bpmn:sequenceFlow id="f28" sourceRef="ReturnCard" targetRef="EndOk" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
+      <bpmndi:BPMNShape id="Participant_1_di" bpmnElement="Participant_1" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2920" height="780" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Client_di" bpmnElement="Lane_Client" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="2890" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ATM_di" bpmnElement="Lane_ATM" isHorizontal="true">
+        <dc:Bounds x="190" y="220" width="2890" height="360" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Proc_di" bpmnElement="Lane_Proc" isHorizontal="true">
+        <dc:Bounds x="190" y="580" width="2890" height="130" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Out_di" bpmnElement="Lane_Out" isHorizontal="true">
+        <dc:Bounds x="190" y="710" width="2890" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_di" bpmnElement="Start" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="220" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="InsertCard_di" bpmnElement="InsertCard" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="290" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CheckCard_di" bpmnElement="CheckCard" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="460" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GwCard_di" bpmnElement="GwCard" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="630" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="610" y="347" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CardBad_di" bpmnElement="CardBad" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="760" y="420" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="RequestPin_di" bpmnElement="RequestPin" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="760" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="VerifyPin_di" bpmnElement="VerifyPin" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="930" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GwPin_di" bpmnElement="GwPin" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="1100" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1080" y="347" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GwTries_di" bpmnElement="GwTries" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="1100" y="435" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1080" y="487" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Capture_di" bpmnElement="Capture" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="1280" y="420" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndCapture_di" bpmnElement="EndCapture" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="1460" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="OpenSess_di" bpmnElement="OpenSess" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="1280" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SelectOp_di" bpmnElement="SelectOp" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="1450" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GwOp_di" bpmnElement="GwOp" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="1620" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1600" y="347" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ViewBal_di" bpmnElement="ViewBal" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="1760" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ShowBal_di" bpmnElement="ShowBal" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="1930" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EnterAmt_di" bpmnElement="EnterAmt" bioc:stroke="#ef6c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#ef6c00">
+        <dc:Bounds x="1760" y="360" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CheckFunds_di" bpmnElement="CheckFunds" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="1930" y="605" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GwFunds_di" bpmnElement="GwFunds" isMarkerVisible="true" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="2110" y="375" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2090" y="427" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="NoFunds_di" bpmnElement="NoFunds" bioc:stroke="#c62828" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#c62828">
+        <dc:Bounds x="2260" y="420" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Cash_di" bpmnElement="Cash" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="2260" y="745" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Receipt_di" bpmnElement="Receipt" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="2430" y="745" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Complete_di" bpmnElement="Complete" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="2620" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReturnCard_di" bpmnElement="ReturnCard" bioc:stroke="#6a1b9a" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#6a1b9a">
+        <dc:Bounds x="2790" y="280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndOk_di" bpmnElement="EndOk" bioc:stroke="#2e7d32" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#2e7d32">
+        <dc:Bounds x="2970" y="302" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="256" y="150" />
+        <di:waypoint x="290" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="410" y="150" />
+        <di:waypoint x="435" y="150" />
+        <di:waypoint x="435" y="320" />
+        <di:waypoint x="460" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="580" y="320" />
+        <di:waypoint x="630" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="680" y="320" />
+        <di:waypoint x="720" y="320" />
+        <di:waypoint x="720" y="460" />
+        <di:waypoint x="760" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="690" y="442" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="680" y="320" />
+        <di:waypoint x="760" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="730" y="302" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="880" y="320" />
+        <di:waypoint x="930" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
+        <di:waypoint x="1050" y="320" />
+        <di:waypoint x="1100" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
+        <di:waypoint x="1125" y="345" />
+        <di:waypoint x="1125" y="435" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1095" y="417" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
+        <di:waypoint x="1150" y="460" />
+        <di:waypoint x="1280" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1250" y="442" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10">
+        <di:waypoint x="1100" y="460" />
+        <di:waypoint x="1060" y="460" />
+        <di:waypoint x="1060" y="378" />
+        <di:waypoint x="820" y="378" />
+        <di:waypoint x="820" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1030" y="360" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11">
+        <di:waypoint x="1400" y="460" />
+        <di:waypoint x="1460" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12">
+        <di:waypoint x="1150" y="320" />
+        <di:waypoint x="1280" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1250" y="302" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13">
+        <di:waypoint x="1400" y="320" />
+        <di:waypoint x="1450" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14">
+        <di:waypoint x="1570" y="320" />
+        <di:waypoint x="1620" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15">
+        <di:waypoint x="1670" y="320" />
+        <di:waypoint x="1715" y="320" />
+        <di:waypoint x="1715" y="240" />
+        <di:waypoint x="1760" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1685" y="222" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16">
+        <di:waypoint x="1880" y="240" />
+        <di:waypoint x="1930" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17">
+        <di:waypoint x="2050" y="240" />
+        <di:waypoint x="2604" y="240" />
+        <di:waypoint x="2604" y="320" />
+        <di:waypoint x="2620" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18">
+        <di:waypoint x="1670" y="320" />
+        <di:waypoint x="1715" y="320" />
+        <di:waypoint x="1715" y="400" />
+        <di:waypoint x="1760" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1685" y="382" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19">
+        <di:waypoint x="1820" y="440" />
+        <di:waypoint x="1905" y="440" />
+        <di:waypoint x="1905" y="605" />
+        <di:waypoint x="1990" y="605" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20">
+        <di:waypoint x="1990" y="605" />
+        <di:waypoint x="2062" y="605" />
+        <di:waypoint x="2062" y="425" />
+        <di:waypoint x="2135" y="425" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21">
+        <di:waypoint x="2160" y="400" />
+        <di:waypoint x="2210" y="400" />
+        <di:waypoint x="2210" y="460" />
+        <di:waypoint x="2260" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2180" y="442" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22">
+        <di:waypoint x="2135" y="425" />
+        <di:waypoint x="2227" y="425" />
+        <di:waypoint x="2227" y="745" />
+        <di:waypoint x="2320" y="745" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2197" y="727" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23">
+        <di:waypoint x="2380" y="785" />
+        <di:waypoint x="2430" y="785" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24">
+        <di:waypoint x="2490" y="745" />
+        <di:waypoint x="2604" y="745" />
+        <di:waypoint x="2604" y="360" />
+        <di:waypoint x="2680" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f25_di" bpmnElement="f25">
+        <di:waypoint x="880" y="460" />
+        <di:waypoint x="2850" y="460" />
+        <di:waypoint x="2850" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f26_di" bpmnElement="f26">
+        <di:waypoint x="2380" y="460" />
+        <di:waypoint x="2850" y="460" />
+        <di:waypoint x="2850" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f27_di" bpmnElement="f27">
+        <di:waypoint x="2740" y="320" />
+        <di:waypoint x="2790" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f28_di" bpmnElement="f28">
+        <di:waypoint x="2910" y="320" />
+        <di:waypoint x="2970" y="320" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
