@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpen, Cable, Compass, Lock, Radio, Sparkles, Swords, Unlock } from "lucide-react";
+import { ArrowRight, BookOpen, Cable, Compass, Lock, Radio, Sparkles, Swords, Unlock, Workflow } from "lucide-react";
 import { CURRICULUM } from "@/content/curriculum";
 import { PageMotion } from "@/components/ui/PageMotion";
 import { Pill } from "@/components/ui/Pill";
@@ -132,6 +132,13 @@ export function HomePage() {
           <div className="font-display mt-3 text-xl">Справочник</div>
           <p className="mt-2 text-sm text-muted">
             Дебет, кредит, холд, nostro, FX, trailer — с примером ноги и API. Открывается рядом с квестом.
+          </p>
+        </Link>
+        <Link to="/bpmn" className="glass rounded-3xl p-5 transition hover:border-gold/30">
+          <Workflow className="text-violet" size={18} />
+          <div className="font-display mt-3 text-xl">BPMN · банкомат</div>
+          <p className="mt-2 text-sm text-muted">
+            Редактируемая схема снятия: дорожки, XOR/AND, изъятие карты. Скачайте .bpmn в Camunda.
           </p>
         </Link>
         <Link to="/pet" className="glass rounded-3xl p-5 transition hover:border-gold/30">

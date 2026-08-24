@@ -18,6 +18,7 @@ import { MatchView } from "./MatchView";
 import { SceneView } from "./SceneView";
 import { OrderView } from "./OrderView";
 import { SpotView } from "./SpotView";
+import { BpmnView } from "./BpmnView";
 
 export function BlockRenderer({
   block,
@@ -65,6 +66,8 @@ export function BlockRenderer({
       return <OrderView block={block} moduleId={module.id} />;
     case "spot":
       return <SpotView block={block} moduleId={module.id} />;
+    case "bpmn":
+      return <BpmnView block={block} />;
     default:
       return null;
   }
