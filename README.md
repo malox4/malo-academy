@@ -1,101 +1,55 @@
-# Malo Academy
+# Analyst Hall
 
-Играбельная академия **Business Analyst / System Analyst**: путь Intern → Senior, ночные смены, квесты и **живой core-banking пет**, в который можно стрелять из Postman.
+Зал самообучения **BA / SA**. Intern бесплатно. PRO — когда нужно **писать** в учебный банк (`POST /api/v1`), открыть junior+ и полный SQL. Новым — **3 дня PRO**. Не Zoom-школа, сертификата нет.
 
-Не учебник. Контур меняется от ваших запросов: P2P пишет журнал, холд режет available, refund без реверса рвёт пробный баланс.
+Гость видит лендинг на [http://localhost:8080](http://localhost:8080). После входа — [зал](http://localhost:8080/hall). Сравнение: [http://localhost:8080/pricing](http://localhost:8080/pricing).
 
 | | |
 |---|---|
-| Открыть | [http://localhost:8080](http://localhost:8080) |
-| Пет / Postman | [http://localhost:8080/pet](http://localhost:8080/pet) · `/api/v1` |
-| Справочник проводок | [http://localhost:8080/book](http://localhost:8080/book) |
-| Спека | [http://localhost:8080/api/v1/openapi.json](http://localhost:8080/api/v1/openapi.json) |
+| Главная | http://localhost:8080 |
+| Зал | http://localhost:8080/hall |
+| Материалы | http://localhost:8080/materials |
+| Практика | http://localhost:8080/practice |
+| Собес | http://localhost:8080/interview · http://localhost:8080/live |
+| Пет | http://localhost:8080/pet · `/api/v1` |
+| Health | http://localhost:8080/api/health |
 
-Прогресс ученика — в браузере (LocalStorage + IndexedDB). Авторизации нет. Ledger пета — в `data/` (Docker volume `academy-data`).
-
-## За 30 секунд
-
-```bash
-git clone https://github.com/malox4/malo-academy.git
-cd malo-academy
-docker compose up --build
-```
-
-```bash
-curl -sS http://localhost:8080/api/health
-# {"ok":true,"product":"malo-core-banking","version":3}
-
-curl -sS -X POST http://localhost:8080/api/v1/transfers \
-  -H 'Content-Type: application/json' \
-  -d '{"fromWalletId":"wal_anna","toWalletId":"wal_boris","amount":5000}'
-```
-
-В консоли [/pet](http://localhost:8080/pet) дважды стрельните P2P без ключа — две DR-ноги Анны. Это заводской баг контракта, не «сломалось». Выкатите контракт из каталога, когда поймёте шов.
-
-## Что внутри
-
-**Путь** — 48 модулей Intern → Senior. Вкладка «Играть»: сортировки, споты, сцены, AC. Разбор — рядом, не вместо.
-
-**API · пет** — двойная запись, T-счета, холд → capture → refund, IBAN / nostro / MT103, FX двумя журналами, зарплатный файл, клиринг T+1, сверка Orient. Контракт с завода дырявый: нет идемпотентности, ACS timeout = SUCCESS, refund без реверса.
-
-**Квесты** — пять контуров: ночь на ledger, Malo Wallet, ShopLine, MedQueue, CityPark. Пишете ноги журнала, 409, SMS, NFR. Исход считается из метрик, не из «правильного теста».
-
-**Зал** — смены как в 03:12: KYC, журнал, файл банка, go/no-go.
-
-**Справочник** — дебет, кредит, холд ≠ ledger, nostro, trailer. С примером и кнопкой «вставить» в квесте.
-
-**Собес / симуляция / печати** — голос на интервью, ситуационный экзамен 70%+, XP и бейджи.
+Сиды админа и PRO задаются только переменными `ADMIN_EMAIL` / `ADMIN_PASSWORD` и `PRO_EMAIL` / `PRO_PASSWORD`. На сайте и на экране входа пароли не показываем.
 
 ## Docker
 
-Образ — Node: статика `dist` + тот же `server/malo-api.mjs`, что в `npm run dev`. Порт **8080**.
+Нужны Docker Desktop и свободный порт **8080**. Образ собирает Vue (включая фото лендинга) и Go. Postgres в той же compose-сети, порт 5432 наружу не открыт.
 
 ```bash
-docker compose up --build
+git clone https://github.com/malox4/analyst-hall.git
+cd analyst-hall
+cp .env.example .env
 ```
 
-Остановка: `docker compose down`. Ledger в volume; `down -v` сотрёт проводки.
+В `.env` поставьте свои `ADMIN_PASSWORD`, `PRO_PASSWORD`, `POSTGRES_PASSWORD`. На публичном HTTPS: `COOKIE_SECURE=1`.
+
+```bash
+docker compose up --build -d
+curl http://127.0.0.1:8080/api/health
+```
+
+Откройте [http://localhost:8080](http://localhost:8080). Логи: `docker compose logs -f academy`. Стоп: `docker compose down`. `down -v` сотрёт учебный банк и Postgres.
+
+Образ: Node 22 → `web/dist`, Go 1.23 → бинарь, Debian slim слушает `:8080`. `.env` в слой образа не копируется.
 
 ## Без Docker
 
-```bash
-npm install
-npm run dev
-```
-
-Тот же [http://localhost:8080](http://localhost:8080).
-
-Прод-сборка:
+Нужны **Go 1.23+** и **Node 22**.
 
 ```bash
-npm run build
-npm start
-# или: npm run preview
+cd web && npm install && npm run build && cd ..
+go run ./cmd/academy
 ```
 
-## Пет: куда стрелять
+Без `DATABASE_URL` учётки пишутся в `data/academy-users.json`.
+
+## Пет
 
 База: `http://localhost:8080/api/v1`
 
-| Контур | Примеры |
-|---|---|
-| Счета | `GET /accounts` · `GET /ledger/trial-balance` · `GET /ledger/t-accounts/acc_anna` |
-| P2P | `POST /transfers` `{ fromWalletId, toWalletId, amount }` |
-| Карты | `POST /cards/authorize` → `POST /payments/{id}/capture` · refund · chargeback |
-| Банк | `POST /bank/incoming` · outgoing + `ack` · `GET .../mt103` |
-| FX | `POST /fx/convert` `{ fromWalletId: wal_anna, toWalletId: wal_anna_usd, amountTo: 10 }` |
-| Зарплата | `POST /bank/salary` — trailer = сумма строк |
-| Клиринг | `POST /clearing/settle` после capture |
-| Контракт | `PUT /contract` · `POST /reset` вернёт заводские баги |
-
-Кошельки с завода: `wal_anna` (UZS), `wal_anna_usd`, `wal_boris`. IBAN Анны: `UZ12MALO000000000001`.
-
-## Стек
-
-Vite · React · TypeScript · Tailwind · Framer Motion · Zustand · Lucide  
-Пет: Node HTTP (`server/malo-api.mjs` + `server/serve.mjs`)  
-Шрифты: Inter + Fraunces
-
-## Источники идей
-
-IIBA BABOK v3, Karl Wiegers *Software Requirements*, IREB CPRE, SkillMap BA/SA, банк собеседований. Не дословные копии.
+Дважды P2P без ключа идемпотентности — две DR-ноги Анны. Это учебный баг, не поломка.

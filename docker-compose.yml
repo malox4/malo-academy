@@ -1,28 +1,60 @@
-# Malo Academy — зал + живой пет /api/v1 на :8080
-# Ledger: volume academy-data → /app/data
+# Analyst Hall — Postgres 16 + Go (Vue dist) на 8080
+# Деплой: cp .env.example .env  →  правьте пароли  →  docker compose up --build -d
+# Секреты только из .env. В образ они не копируются.
+
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: analyst-hall-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hall}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-analyst_hall}
+    volumes:
+      - hall-pg:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hall} -d ${POSTGRES_DB:-analyst_hall}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
   academy:
-    build: .
-    image: malo-academy:local
-    container_name: malo-academy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: analyst-hall:local
+    container_name: analyst-hall
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: "8080"
+      HOST: "0.0.0.0"
+      WEB_DIR: /app/web/dist
+      DATA_DIR: /app/data
+      DATABASE_URL: postgres://${POSTGRES_USER:-hall}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-analyst_hall}?sslmode=disable
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Set ADMIN_EMAIL in .env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env}
+      PRO_EMAIL: ${PRO_EMAIL:?Set PRO_EMAIL in .env}
+      PRO_PASSWORD: ${PRO_PASSWORD:?Set PRO_PASSWORD in .env}
+      COOKIE_SECURE: ${COOKIE_SECURE:-0}
     ports:
       - "8080:8080"
     volumes:
-      - academy-data:/app/data
-    restart: unless-stopped
+      - hall-data:/app/data
     healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
-        ]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/api/health"]
       interval: 30s
       timeout: 5s
-      retries: 3
-      start_period: 12s
+      start_period: 15s
+      retries: 5
 
 volumes:
-  academy-data:
-    name: malo-academy-ledger
+  hall-data:
+    name: analyst-hall-ledger
+  hall-pg:
+    name: analyst-hall-pg

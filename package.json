@@ -1,35 +1,17 @@
 {
-  "name": "malo-academy",
+  "name": "analyst-hall",
   "private": true,
-  "version": "1.1.0",
-  "type": "module",
-  "description": "Play-first BA/SA academy with a live core-banking pet: journals, holds, IBAN, FX. Russian UI.",
-  "homepage": "https://github.com/malox4/malo-academy",
+  "version": "2.0.0",
+  "description": "Analyst Hall: Vue SPA + Go API, live teaching bank on :8080.",
+  "homepage": "https://github.com/malox4/analyst-hall",
   "repository": {
     "type": "git",
-    "url": "https://github.com/malox4/malo-academy.git"
+    "url": "https://github.com/malox4/analyst-hall.git"
   },
   "scripts": {
-    "dev": "vite --host :: --port 8080 --strictPort",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host :: --port 8080 --strictPort",
-    "start": "node server/serve.mjs"
-  },
-  "dependencies": {
-    "framer-motion": "^12.23.12",
-    "lucide-react": "^0.539.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-router-dom": "^7.8.0",
-    "zustand": "^5.0.7"
-  },
-  "devDependencies": {
-    "@tailwindcss/vite": "^4.1.11",
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.0",
-    "tailwindcss": "^4.1.11",
-    "typescript": "~5.9.2",
-    "vite": "^7.1.2"
+    "dev:web": "npm run dev --prefix web",
+    "dev:api": "go run ./cmd/academy",
+    "build:web": "npm run build --prefix web",
+    "start": "go run ./cmd/academy"
   }
 }

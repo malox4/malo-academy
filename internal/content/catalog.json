@@ -1,0 +1,156 @@
+{
+  "grades": [
+    {
+      "id": "intern",
+      "title": "Intern",
+      "roman": "I",
+      "tagline": "Смена, журнал, need. 12 контуров до первого самостоятельного тикета",
+      "levels": [
+        {
+          "id": "intern-1",
+          "gradeId": "intern",
+          "rank": 1,
+          "title": "Карта мира",
+          "subtitle": "Кто вы, кто команда, как устроен проект",
+          "hours": "3–4 ч",
+          "moduleIds": ["intern-1-profession", "intern-1-sdlc", "intern-1-team", "intern-1-questions"],
+          "materialIds": ["soft-raci", "car-portfolio", "nfr-wcag", "car-cert"]
+        },
+        {
+          "id": "intern-2",
+          "gradeId": "intern",
+          "rank": 2,
+          "title": "Требования и люди",
+          "subtitle": "Need, уровни, стейкхолдеры",
+          "hours": "4 ч",
+          "moduleIds": ["intern-2-requirement", "intern-2-levels", "intern-2-stakeholders", "intern-2-quality"],
+          "materialIds": ["req-validate", "req-test-analysis", "req-lifecycle"]
+        },
+        {
+          "id": "intern-3",
+          "gradeId": "intern",
+          "rank": 3,
+          "title": "Первые артефакты",
+          "subtitle": "Выявление, заметки, история",
+          "hours": "4 ч",
+          "moduleIds": ["intern-3-elicitation", "intern-3-notes", "intern-3-story", "intern-3-meeting"],
+          "materialIds": ["db-layers", "proc-figma", "api-postman", "bank-ledger-deep", "proc-uml-hold", "proc-mobile-web"]
+        }
+      ]
+    },
+    {
+      "id": "junior",
+      "title": "Junior",
+      "roman": "II",
+      "tagline": "Писать так, чтобы можно было строить",
+      "levels": [
+        {
+          "id": "junior-1",
+          "gradeId": "junior",
+          "rank": 1,
+          "title": "Истории и сценарии",
+          "subtitle": "User Story, INVEST, Use Case, AC",
+          "hours": "5 ч",
+          "moduleIds": ["junior-1-stories", "junior-1-ac", "junior-1-usecase", "junior-1-clarify"],
+          "materialIds": ["api-schema", "api-pagination"]
+        },
+        {
+          "id": "junior-2",
+          "gradeId": "junior",
+          "rank": 2,
+          "title": "Документы",
+          "subtitle": "BRD, SRS, трассировка",
+          "hours": "5 ч",
+          "moduleIds": ["junior-2-brd", "junior-2-srs", "junior-2-trace", "junior-2-write"],
+          "materialIds": ["api-openapi", "db-window", "db-cte", "db-migrate", "api-asyncapi", "api-graphql"]
+        },
+        {
+          "id": "junior-3",
+          "gradeId": "junior",
+          "rank": 3,
+          "title": "Модели",
+          "subtitle": "UML, BPMN, As-Is / To-Be",
+          "hours": "5 ч",
+          "moduleIds": ["junior-3-uml", "junior-3-bpmn", "junior-3-gap", "junior-3-explain"],
+          "materialIds": ["proc-bpmn-collab", "nfr-security", "nfr-pci-log", "bank-cp-cnp", "db-dwh"]
+        }
+      ]
+    },
+    {
+      "id": "middle",
+      "title": "Middle",
+      "roman": "III",
+      "tagline": "Вести фичу от need до релиза",
+      "levels": [
+        {
+          "id": "middle-1",
+          "gradeId": "middle",
+          "rank": 1,
+          "title": "Ценность и приоритеты",
+          "subtitle": "MoSCoW, USM, CJM",
+          "hours": "5 ч",
+          "moduleIds": ["middle-1-prio", "middle-1-usm", "middle-1-cjm", "middle-1-no"],
+          "materialIds": ["req-gost-34602"]
+        },
+        {
+          "id": "middle-2",
+          "gradeId": "middle",
+          "rank": 2,
+          "title": "Системы и данные",
+          "subtitle": "API, SQL, интеграции",
+          "hours": "6 ч",
+          "moduleIds": ["middle-2-api", "middle-2-sql", "middle-2-integration", "middle-2-devtalk"],
+          "materialIds": ["bank-iso20022", "bank-recon", "bank-aml-kyc"]
+        },
+        {
+          "id": "middle-3",
+          "gradeId": "middle",
+          "rank": 3,
+          "title": "Качество системы",
+          "subtitle": "NFR, архитектура, ошибки",
+          "hours": "6 ч",
+          "moduleIds": ["middle-3-nfr", "middle-3-arch", "middle-3-errors", "middle-3-workshop"],
+          "materialIds": ["arch-saga", "nfr-slo", "arch-eventstorm", "arch-styles", "arch-eip"]
+        }
+      ]
+    },
+    {
+      "id": "senior",
+      "title": "Senior",
+      "roman": "IV",
+      "tagline": "Вести сложное изменение и людей вокруг",
+      "levels": [
+        {
+          "id": "senior-1",
+          "gradeId": "senior",
+          "rank": 1,
+          "title": "Стратегия",
+          "subtitle": "Need, опции, оценка",
+          "hours": "5 ч",
+          "moduleIds": ["senior-1-strategy", "senior-1-options", "senior-1-eval", "senior-1-change"],
+          "materialIds": ["req-estimate"]
+        },
+        {
+          "id": "senior-2",
+          "gradeId": "senior",
+          "rank": 2,
+          "title": "Сложные люди",
+          "subtitle": "Конфликт, политика, C-level",
+          "hours": "5 ч",
+          "moduleIds": ["senior-2-conflict", "senior-2-politics", "senior-2-exec", "senior-2-think"],
+          "materialIds": ["soft-workshop"]
+        },
+        {
+          "id": "senior-3",
+          "gradeId": "senior",
+          "rank": 3,
+          "title": "Мастерство",
+          "subtitle": "Менторство, discovery, ownership",
+          "hours": "6 ч",
+          "moduleIds": ["senior-3-mentor", "senior-3-discovery", "senior-3-lead", "senior-3-studio"],
+          "materialIds": ["arch-arc42"]
+        }
+      ]
+    }
+  ]
+}
