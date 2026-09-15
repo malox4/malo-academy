@@ -9,3 +9,10 @@ _extracted
 .idea
 .vscode
 /data/
+.env
+.env.*
+!.env.example
+*.exe
+*.exe~
+/academy
+

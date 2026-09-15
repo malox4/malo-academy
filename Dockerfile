@@ -1,24 +1,34 @@
-# Сборка: Vite dist. Рантайм: Node отдаёт статику и живой /api/v1 (не nginx-only).
-FROM node:22-alpine AS build
-WORKDIR /app
-
-COPY package.json package-lock.json ./
+# Analyst Hall: Vue dist + Go API on 8080. Secrets stay in runtime env, not in the image.
+FROM node:22-alpine AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
 RUN npm ci
+COPY web ./
+RUN npm run build \
+  && test -f dist/media/landing/hero-desk.jpg \
+  && test -f dist/media/landing/bank-pay.jpg
 
-COPY . .
-RUN npm run build
+FROM golang:1.23-bookworm AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY cmd ./cmd
+COPY internal ./internal
+COPY --from=web /web/dist ./web/dist
+RUN CGO_ENABLED=0 GOOS=linux go build -o /academy ./cmd/academy
 
-FROM node:22-alpine
+FROM debian:bookworm-slim
 WORKDIR /app
-ENV NODE_ENV=production
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates wget \
+  && rm -rf /var/lib/apt/lists/*
+COPY --from=build /academy /app/academy
+COPY --from=build /src/web/dist /app/web/dist
 ENV PORT=8080
 ENV HOST=0.0.0.0
-
-COPY --from=build /app/dist ./dist
-COPY server ./server
-
+ENV WEB_DIR=/app/web/dist
+ENV DATA_DIR=/app/data
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=3s --start-period=8s \
-  CMD node -e "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-
-CMD ["node", "server/serve.mjs"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=12s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:8080/api/health >/dev/null || exit 1
+CMD ["/app/academy"]
